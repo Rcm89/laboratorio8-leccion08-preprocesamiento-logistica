@@ -20,6 +20,7 @@ from sklearn.neighbors import LocalOutlierFactor  # para detectar outliers usand
 from sklearn.ensemble import IsolationForest  # para detectar outliers usando el método IF
 from sklearn.neighbors import NearestNeighbors  # para calcular la epsilon
 from sklearn.preprocessing import MinMaxScaler, Normalizer, StandardScaler, RobustScaler
+from scipy.stats import chi2_contingency
 
 def exploracion_datos(dataframe):
 
@@ -203,6 +204,37 @@ class Visualizador:
 
         fig.delaxes(axes[-1])
         plt.tight_layout()
+
+    def plot_relacion(self, vr, tamano_grafica=(20, 10)):
+
+        lista_num = self.separar_dataframes()[0].columns
+        lista_cat = self.separar_dataframes()[1].columns
+
+        fig, axes = plt.subplots(ncols = 2, nrows = math.ceil(len(self.dataframe.columns) / 2), figsize=tamano_grafica)
+        axes = axes.flat
+
+        for indice, columna in enumerate(self.dataframe.columns):
+            if columna == vr:
+                fig.delaxes(axes[indice])
+            elif columna in lista_num:
+                sns.histplot(x = columna, 
+                             hue = vr, 
+                             data = self.dataframe, 
+                             ax = axes[indice], 
+                             palette = "mako", 
+                             legend = False)
+                
+            elif columna in lista_cat:
+                sns.countplot(x = columna, 
+                              hue = vr, 
+                              data = self.dataframe, 
+                              ax = axes[indice], 
+                              palette = "mako"
+                              )
+
+            axes[indice].set_title(f"Relación {columna} vs {vr}",size=25)   
+
+        plt.tight_layout()
     
     def deteccion_outliers(self, color = "grey"):
 
@@ -292,3 +324,19 @@ def escalar_datos(data, cols, metodo="robust"):
     
     df_scaled = pd.DataFrame(scaler.fit_transform(data[cols]), columns=cols, index=data.index)
     return df_scaled, scaler
+
+
+def detectar_orden_var_cat(df, lista_cat, var_respuesta):
+    for categorica in lista_cat:
+        print(f"Evaluando la variable {categorica.upper()}")
+        # Creamos una tabla de contingencia entre cada variable categorica y la variable respuesta
+        df_cross_tab = pd.crosstab(df[categorica], df[var_respuesta])
+        display(df_cross_tab)
+        
+        chi2, p, dof, expected = chi2_contingency(df_cross_tab)
+
+        if p <0.05:
+            print(f"La variable {categorica} tiene orden.")
+        else:
+            print(f"La variable {categorica} NO tiene orden.")
+        print("_________________________ \n")

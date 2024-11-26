@@ -368,6 +368,9 @@ class Encoding:
 
             # concatenamos los resultados obtenidos en la transformación con el DataFrame original
             self.dataframe = pd.concat([self.dataframe.reset_index(drop=True), oh_df.reset_index(drop=True)], axis=1)
+
+            # eliminamos las columnas original que ya no nos hacen falta
+            self.dataframe.drop(col_encode, axis=1, inplace=True)
     
         return self.dataframe
     
