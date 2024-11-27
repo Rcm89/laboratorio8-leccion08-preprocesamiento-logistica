@@ -51,7 +51,7 @@ class AnalisisModelosClasificacion:
         self.modelos = {
             "logistic_regression": LogisticRegression(),
             "tree": DecisionTreeClassifier(),
-            "random_forest": RandomForestClassifier(),
+            "random_forest": RandomForestClassifier(n_jobs=-1),
             "gradient_boosting": GradientBoostingClassifier(),
             "xgboost": xgb.XGBClassifier()
         }
@@ -111,7 +111,7 @@ class AnalisisModelosClasificacion:
         grid_search = GridSearchCV(estimator=modelo, 
                                    param_grid=param_grid, 
                                    cv=cross_validation, 
-                                   scoring='accuracy')
+                                   scoring='accuracy', n_jobs=-1)
         
         grid_search.fit(self.X_train, self.y_train)
         self.resultados[modelo_nombre]["mejor_modelo"] = grid_search.best_estimator_

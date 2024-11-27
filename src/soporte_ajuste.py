@@ -30,7 +30,7 @@ class AnalisisModelosRegresion:
 
         # Configuración de modelos
         self.modelos = {
-            "regresion": LinearRegression(n_jobs=-1),
+            "regresion": LinearRegression(),
             "tree": DecisionTreeRegressor(),
             "random_forest": RandomForestRegressor(),
             "gradient_boosting": GradientBoostingRegressor(),
