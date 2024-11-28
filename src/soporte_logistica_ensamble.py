@@ -232,11 +232,15 @@ class AnalisisModelosClasificacion:
             "Importance": importancia
         }).sort_values(by="Importance", ascending=False)
 
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(10, 8))  # Aumentar el tamaño de la figura para más espacio
         sns.barplot(x="Importance", y="Feature", data=importancia_df, palette="viridis")
-        plt.title(f"Importancia de Características ({modelo_nombre})")
-        plt.xlabel("Importancia")
-        plt.ylabel("Características")
+        plt.title(f"Importancia de Características ({modelo_nombre})", fontsize=14)
+        plt.xlabel("Importancia", fontsize=12)
+        plt.ylabel("Características", fontsize=12)
+
+        # Mejorar legibilidad de las etiquetas
+        plt.yticks(fontsize=10, rotation=0, ha="right")  # Reducir tamaño, evitar rotación y alinear a la derecha
+        plt.tight_layout()  # Ajustar márgenes automáticamente para evitar solapamiento
         plt.show()
 
     def plot_shap_summary(self, modelo_nombre):
